@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.raistlintao</groupId>
+    <artifactId>SparkModelHelper</artifactId>
+    <version>1.1.0</version>
+    <packaging>jar</packaging>
+
+    <name>SparkModelHelper</name>
+    <description>A helper that extracting useful information from trained Spark Model</description>
+    <url>https://github.com/RaistlinTAO/SparkModelHelper</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Raistlin TAO</name>
+            <email>demonvk@gmail.com</email>
+            <organization>Github</organization>
+            <organizationUrl>https://github.com/RaistlinTAO</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:RaistlinTAO/SparkModelHelper.git</connection>
+        <developerConnection>scm:git:ssh://github.com:RaistlinTAO/SparkModelHelper.git</developerConnection>
+        <url>https://github.com/RaistlinTAO/SparkModelHelper/tree/main</url>
+    </scm>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/net.liftweb/lift-json -->
+        <dependency>
+            <groupId>net.liftweb</groupId>
+            <artifactId>lift-json_2.12</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.79</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-mllib -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-mllib_2.12</artifactId>
+            <version>2.4.8</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

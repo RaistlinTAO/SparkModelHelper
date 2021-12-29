@@ -88,6 +88,15 @@ class DecisionModelHelper(tree: org.apache.spark.ml.classification.DecisionTreeC
     _allPath.toList
   }
 
+  /**
+   * Get the Roof Feature Index from Tree, useful when you want dynamically adjust your dataframe
+   *
+   * @return Feature Index
+   */
+  def getRootFeature: Int = {
+    tree.rootNode.asInstanceOf[org.apache.spark.ml.tree.InternalNode].split.featureIndex
+  }
+
   private def get_node_type(node: org.apache.spark.ml.tree.Node): String = node match {
     case internal: org.apache.spark.ml.tree.InternalNode => "internal"
     case other => "leaf"
@@ -196,16 +205,6 @@ class DecisionModelHelper(tree: org.apache.spark.ml.classification.DecisionTreeC
           extractRuleFromJson(jsonObj.getJSONObject("rightChild"))
         }
       }
-      else {
-        if (_lastDirectionIsLeft) {
-          _lastJSONNode.remove("leftChild")
-        }
-        else {
-          _lastJSONNode.remove("rightChild")
-        }
-        _tempPath.dropRight(1)
-        extractRuleFromJson(_jsonObj)
-      }
     }
     else {
       if (jsonObj.getInteger("prediction") == _predictionLabel && jsonObj.getFloat("impurity") <= _impurityRestriction) {
@@ -213,14 +212,14 @@ class DecisionModelHelper(tree: org.apache.spark.ml.classification.DecisionTreeC
         //println("leaf node: PATH - " + _tempPath)
         _allPath += _tempPath.toList
       }
-      if (_lastDirectionIsLeft) {
-        _lastJSONNode.remove("leftChild")
-      }
-      else {
-        _lastJSONNode.remove("rightChild")
-      }
-      _tempPath.clear()
-      extractRuleFromJson(_jsonObj)
     }
+    if (_lastDirectionIsLeft) {
+      _lastJSONNode.remove("leftChild")
+    }
+    else {
+      _lastJSONNode.remove("rightChild")
+    }
+    _tempPath.clear()
+    extractRuleFromJson(_jsonObj)
   }
 }

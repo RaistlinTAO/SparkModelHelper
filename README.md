@@ -2,6 +2,9 @@
 
 A helper that extracting useful information from trained Spark Model
 
+![Sonatype](https://img.shields.io/nexus/s/io.github.raistlintao/sparkmodelhelper_2.12?server=https%3A%2F%2Fs01.oss.sonatype.org%2F)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.raistlintao/sparkmodelhelper_2.12.svg)
+
 Have you tired staring at the model.toDebugString() for hours and getting no clue at all? Something like this:
 ```text
 DecisionTreeClassificationModel (uid=dtc_e933455b) of depth 5 with 341 nodes
@@ -106,3 +109,4 @@ will output as
 ```text
     UserCity|3.5|1|1.5|R
 ```
+

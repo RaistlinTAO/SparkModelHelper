@@ -1,4 +1,4 @@
-package io.github.RaistlinTao
+package io.github.raistlintao
 
 import org.apache.spark.ml.classification.DecisionTreeClassificationModel
 import org.apache.spark.sql.SparkSession

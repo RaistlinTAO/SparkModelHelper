@@ -1,4 +1,4 @@
-package io.github.RaistlinTao
+package io.github.raistlintao
 
 import com.alibaba.fastjson.{JSON, JSONObject}
 import net.liftweb.json.DefaultFormats

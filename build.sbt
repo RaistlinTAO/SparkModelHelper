@@ -1,6 +1,6 @@
 import sbt.Keys.libraryDependencies
 
-ThisBuild / version := "1.1.0"
+ThisBuild / version := "1.2.0"
 ThisBuild / versionScheme := Some("pvp")
 ThisBuild / scalaVersion := "2.12.15"
 

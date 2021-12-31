@@ -22,6 +22,22 @@ DecisionTreeClassificationModel (uid=dtc_e933455b) of depth 5 with 341 nodes
 ```
 Well now you have this helper designed for HUMAN, which matters.
 
+## Contents
+- [Spark Model Helper](#spark-model-helper)
+    * [Usage:](#usage-)
+        + [**DecisionTreeClassificationModel Analysis**](#--decisiontreeclassificationmodel-analysis--)
+            - [_1. Get Root Feature Index from trained model_](#-1-get-root-feature-index-from-trained-model-)
+            - [_2. Get the JSON string from DecisionTreeClassificationModel_](#-2-get-the-json-string-from-decisiontreeclassificationmodel-)
+        + [_3. Return an Object of Model Node-Tree_](#-3-return-an-object-of-model-node-tree-)
+        + [_4. Return Root to Leaf Path of Rules_](#-4-return-root-to-leaf-path-of-rules-)
+        + [_5. Customise the Feature_Index_](#-5-customise-the-feature-index-)
+        + [**DecisionTreeClassificationModel Rule Helper**](#--decisiontreeclassificationmodel-rule-helper--)
+            - [_Convert Rules into Python or Scala_](#-convert-rules-into-python-or-scala-)
+            - [_Evaluate new data against Rules_](#-evaluate-new-data-against-rules-)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
 ## Usage:
 
 ### **DecisionTreeClassificationModel Analysis**
@@ -110,3 +126,71 @@ will output as
     UserCity|3.5|1|1.5|R
 ```
 
+### **DecisionTreeClassificationModel Rule Helper**
+
+#### _Convert Rules into Python or Scala_
+```scala
+    rules.foreach(rule => {
+      println("Rule (Scala): " + '\n' + DecisionRuleHelper.getStatementFromPathList(rule, language = Language.Scala))
+      println("Rule (Python): " + '\n' + DecisionRuleHelper.getStatementFromPathList(rule, language = Language.Python))
+    })
+```
+
+You can get code directly from this function and just Copy & Paste
+```text
+Rule (Scala): 
+if (F(58) <= 1.5 && F(56) > 2.5 && F(20) > 2500000.0 && F(20) <= 3.523971665E10) 1.0
+Rule (Python): 
+if F(58) <= 1.5 and F(56) > 2.5 and F(20) > 2500000.0 and F(20) <= 3.523971665E10: 1.0
+```
+
+#### _Evaluate new data against Rules_
+For testing new data against extracted rules, *Remember ONLY support non-customised Feature Name*
+
+```scala
+    //Load the data into Dataframe from CSV
+    var data = spark.read.format("csv").option("header", value = false).option("inferSchema", value = true).load("sample/testing_data.csv").na.drop("all")
+    println("Data has been loaded into Dataframe from CSV file, or you can use existing Dataframe directly")
+    //Convert Dataframe Schema Datatype into a ListBuffer
+    val typeList = ListBuffer[String]()
+    data.schema.foreach(schemaNode => {
+      schemaNode.dataType match {
+        case IntegerType => {
+          typeList += "INT"
+        }
+        case DoubleType => {
+          typeList += "DOUBLE"
+        }
+        case LongType => {
+          typeList += "LONG"
+        }
+        case _ => {
+          typeList += "DEC"
+        }
+      }
+    })
+    //Loop Though Every Rules (Start from 1 for Easy Column Name)
+    for (ruleIndex <- 1 to rules.length) {
+      val columns = data.columns
+
+      //Define the User Defined Function: Using DecisionRuleHelper.evaluateRule
+      def combineUdf = udf((row: Row) => DecisionRuleHelper.evaluateRule(row, rules(ruleIndex - 1), typeList.toList))
+
+      //Create a new column that save the evaluation result of each rows into Column
+      //If data in one row fit the rule, the result is 1, otherwise 0
+      data = data.withColumn("Rule" + ruleIndex.toString, combineUdf(struct(columns.map(col): _*)))
+      println("Rule " + ruleIndex + " proceed")
+    }
+    data.write.format("csv").save("result/" + System.currentTimeMillis() / 1000)
+    println("Result CSV Saved, or you can use data (Dataframe) directly")
+```
+
+After the loop end, the data itself changed into a new dataframe with several additional columns depends on your rules 
+extracted from model(1 rule for 1 column). 
+Each additional column represents result of evaluation of current row.
+
+For example, if row 1 fit Rule 1: 
+```
+(F(58) <= 1.5 && F(56) > 2.5 && F(20) > 2500000.0 && F(20) <= 3.523971665E10) 1.0
+```
+You will get 1 otherwise 0

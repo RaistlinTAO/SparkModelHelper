@@ -6,6 +6,9 @@
 
     <groupId>io.github.raistlintao</groupId>
     <artifactId>SparkModelHelper</artifactId>
+    <!-- for Github Package
+    <artifactId>sparkmodelhelper</artifactId>
+    -->
     <version>1.2.0</version>
     <packaging>jar</packaging>
 
@@ -56,5 +59,11 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/raistlintao/sparkmodelhelper</url>
+        </repository>
+    </distributionManagement>
 </project>

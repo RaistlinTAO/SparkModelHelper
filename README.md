@@ -2,10 +2,16 @@
 
 A helper that extracting useful information from trained Spark Model
 
+![License](https://img.shields.io/github/license/RaistlinTAO/SparkModelHelper)
+
 ![Sonatype](https://img.shields.io/nexus/s/io.github.raistlintao/sparkmodelhelper_2.12?server=https%3A%2F%2Fs01.oss.sonatype.org%2F)
 ![Maven Central](https://img.shields.io/maven-central/v/io.github.raistlintao/sparkmodelhelper_2.12.svg)
 
+![Code Size](https://img.shields.io/github/languages/code-size/raistlintao/SparkModelHelper)
+![Repo Size](https://img.shields.io/github/repo-size/RaistlinTAO/SparkModelHelper)
+
 Have you tired staring at the model.toDebugString() for hours and getting no clue at all? Something like this:
+
 ```text
 DecisionTreeClassificationModel (uid=dtc_e933455b) of depth 5 with 341 nodes
   If (feature 518 <= 1.5)
@@ -23,27 +29,30 @@ DecisionTreeClassificationModel (uid=dtc_e933455b) of depth 5 with 341 nodes
 Well now you have this helper designed for HUMAN, which matters.
 
 ## Contents
+
 - [Spark Model Helper](#spark-model-helper)
-    * [Usage:](#usage-)
-        + [**DecisionTreeClassificationModel Analysis**](#--decisiontreeclassificationmodel-analysis--)
-            - [_1. Get Root Feature Index from trained model_](#-1-get-root-feature-index-from-trained-model-)
-            - [_2. Get the JSON string from DecisionTreeClassificationModel_](#-2-get-the-json-string-from-decisiontreeclassificationmodel-)
-        + [_3. Return an Object of Model Node-Tree_](#-3-return-an-object-of-model-node-tree-)
-        + [_4. Return Root to Leaf Path of Rules_](#-4-return-root-to-leaf-path-of-rules-)
-        + [_5. Customise the Feature_Index_](#-5-customise-the-feature-index-)
-        + [**DecisionTreeClassificationModel Rule Helper**](#--decisiontreeclassificationmodel-rule-helper--)
-            - [_Convert Rules into Python or Scala_](#-convert-rules-into-python-or-scala-)
-            - [_Evaluate new data against Rules_](#-evaluate-new-data-against-rules-)
+    * [Usage](#usage)
+        + [**DecisionTreeClassificationModel Analysis**](#decisiontreeclassificationmodel-analysis)
+            - [_1. Get Root Feature Index from trained model_](#1-get-root-feature-index-from-trained-model)
+            - [_2. Get the JSON string from
+              DecisionTreeClassificationModel_](#2-get-the-json-string-from-decisiontreeclassificationmodel)
+            - [_3. Return an Object of Model Node-Tree_](#3-return-an-object-of-model-node-tree)
+            - [_4. Return Root to Leaf Path of Rules_](#4-return-root-to-leaf-path-of-rules)
+            - [_5. Customise the Feature_Index_](#5-customise-the-feature_index)
+        + [**DecisionTreeClassificationModel Rule Helper**](#decisiontreeclassificationmodel-rule-helper)
+            - [_Convert Rules into Python or Scala_](#1-convert-rules-into-python-or-scala)
+            - [_Evaluate new data against Rules_](#2-evaluate-new-data-against-rules)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
+##### This helper was built for [Scala 2.12.15](https://www.scala-lang.org/download/2.12.15.html) and [Spark 2.4.8](https://spark.apache.org/docs/2.4.8/). Also tested with the latest Scala and Spark.
 
-## Usage:
+# Usage
 
-### **DecisionTreeClassificationModel Analysis**
+## **DecisionTreeClassificationModel Analysis**
+
 ***
 
-#### _1. Get Root Feature Index from trained model_
+### _1. Get Root Feature Index from trained model_
 
 In automated ML, sometimes you need to retrain model due to the scalar metric as evaluation result (precision and recall
 for instance) are not within a desired range. By using rootFeatureIndex we can change the dataframe accordingly.
@@ -53,7 +62,7 @@ for instance) are not within a desired range. By using rootFeatureIndex we can c
   println("Root Feature Index: " + helper.getRootFeature)
 ```
 
-#### _2. Get the JSON string from DecisionTreeClassificationModel_
+### _2. Get the JSON string from DecisionTreeClassificationModel_
 
 ```scala
   val helper = new DecisionModelHelper(model)
@@ -126,9 +135,9 @@ will output as
     UserCity|3.5|1|1.5|R
 ```
 
-### **DecisionTreeClassificationModel Rule Helper**
+## **DecisionTreeClassificationModel Rule Helper**
 
-#### _Convert Rules into Python or Scala_
+### _1. Convert Rules into Python or Scala_
 ```scala
     rules.foreach(rule => {
       println("Rule (Scala): " + '\n' + DecisionRuleHelper.getStatementFromPathList(rule, language = Language.Scala))
@@ -144,7 +153,7 @@ Rule (Python):
 if F(58) <= 1.5 and F(56) > 2.5 and F(20) > 2500000.0 and F(20) <= 3.523971665E10: 1.0
 ```
 
-#### _Evaluate new data against Rules_
+### _2. Evaluate new data against Rules_
 For testing new data against extracted rules, *Remember ONLY support non-customised Feature Name*
 
 ```scala
